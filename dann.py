@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 from torch.autograd import Function
+import copy
 
 try:
     from torch.hub import load_state_dict_from_url
@@ -94,4 +95,9 @@ def alexnet(pretrained=False, progress=True, **kwargs):
         state_dict = load_state_dict_from_url(model_urls['alexnet'],
                                               progress=progress)
         model.load_state_dict(state_dict, strict=False)
+        
+        model.discriminator[1].weight.data = copy.deepcopy(model.classifier[1].weight.data)
+        model.discriminator[1].bias.data = copy.deepcopy(model.classifier[1].bias.data)
+        model.discriminator[4].weight.data = copy.deepcopy(model.classifier[4].weight.data)
+        model.discriminator[4].bias.data = copy.deepcopy(model.classifier[4].bias.data)
     return model
